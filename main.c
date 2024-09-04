@@ -42,7 +42,7 @@ void account() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// 8*8 Mode
-void printtable8(char display[8][8], int khooneh[8][8], int flag) {
+void printtable8(char display[8][8], int map[8][8], int flag) {
     printf("\t\033[1;31m%[Flag remaining]:\033[0m  %d \n\n", flag);
     printf("       1   2   3   4   5   6   7   8\n\n");
     printf("      -------------------------------\n");
@@ -113,36 +113,36 @@ void printtable8(char display[8][8], int khooneh[8][8], int flag) {
         i--;
         for (int j = 0; j < 8; j++) {
             printf("|");
-            if (khooneh[i][j] == 0) {
+            if (map[i][j] == 0) {
                 printf("   ");
                 continue;
             }
-            if (khooneh[i][j] == 1) {
-                printf(" \033[1;34m%d\033[0m ", khooneh[i][j]);
+            if (map[i][j] == 1) {
+                printf(" \033[1;34m%d\033[0m ", map[i][j]);
                 continue;
             }
-            if (khooneh[i][j] == 2) {
-                printf(" \033[1;32m%d\033[0m ", khooneh[i][j]);
+            if (map[i][j] == 2) {
+                printf(" \033[1;32m%d\033[0m ", map[i][j]);
                 continue;
             }
-            if (khooneh[i][j] == 3) {
-                printf(" \033[1;31m%d\033[0m ", khooneh[i][j]);
+            if (map[i][j] == 3) {
+                printf(" \033[1;31m%d\033[0m ", map[i][j]);
                 continue;
             }
-            if (khooneh[i][j] == 4) {
-                printf(" \033[1;33m%d\033[0m ", khooneh[i][j]);
+            if (map[i][j] == 4) {
+                printf(" \033[1;33m%d\033[0m ", map[i][j]);
                 continue;
             }
-            if (khooneh[i][j] == 5) {
-                printf(" \033[1;36m%d\033[0m ", khooneh[i][j]);
+            if (map[i][j] == 5) {
+                printf(" \033[1;36m%d\033[0m ", map[i][j]);
                 continue;
             }
-            if (khooneh[i][j] == 6) {
-                printf(" \033[1;35m%d\033[0m ", khooneh[i][j]);
+            if (map[i][j] == 6) {
+                printf(" \033[1;35m%d\033[0m ", map[i][j]);
                 continue;
             }
-            if (khooneh[i][j] == 7) {
-                printf(" \033[1;37m%d\033[0m ", khooneh[i][j]);
+            if (map[i][j] == 7) {
+                printf(" \033[1;37m%d\033[0m ", map[i][j]);
                 continue;
             }
             else {
@@ -158,14 +158,79 @@ void printtable8(char display[8][8], int khooneh[8][8], int flag) {
     }
 
 }
+void bomblocation8(int map[8][8], int lower_bound, int upper_bound) {
+    //This function randomly distributes bombs in the game cells
+    for (int bombcount = 10; bombcount > 0; bombcount--) {
+        int numi = (rand() % (upper_bound - lower_bound + 1)) + lower_bound;     // i
+        int numj = (rand() % (upper_bound - lower_bound + 1)) + lower_bound;     // j
+        int bomb_counter = 0;
+        for (int i = 0; i < 8; i++) {
+            if (map[i][numj] == 9) {
+                bomb_counter++;                       //this variable controls the bomb's count in each column
+            }
+        }
+        if (bomb_counter >= 3) {
+            bombcount++;
+            continue;
+        }
+        if (map[numi][numj] != 9) {
+            map[numi][numj] = 9;
+        }
+        else { bombcount++; continue; }
+    }
 
+}
+void bomb_attached8(int map[8][8]) {
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            if (map[i][j] == 9)continue;
+            if (j != 7 && map[i][j + 1] == 9) {
+                map[i][j]++;
+            }
+            if (j != 0 && map[i][j - 1] == 9) {
+                map[i][j]++;
+            }
+            if (i != 7 && map[i + 1][j] == 9) {
+                map[i][j]++;
+            }
+            if (i != 7 && j != 0 && map[i + 1][j - 1] == 9) {
+                map[i][j]++;
+            }
+            if (i != 7 && j != 7 && map[i + 1][j + 1] == 9) {
+                map[i][j]++;
+            }
+            if (i != 0 && map[i - 1][j] == 9) {
+                map[i][j]++;
+            }
+            if (i != 0 && j != 7 && map[i - 1][j + 1] == 9) {
+                map[i][j]++;
+            }
+            if (i != 0 && j != 0 && map[i - 1][j - 1] == 9) {
+                map[i][j]++;
+            }
+
+        }
+    }
+
+}
 void game8() {
-    int khooneh[8][8] = { 0 };
+    int map[8][8] = { 0 };
+    int lower_bound = 0;
+    int upper_bound = 7;
+    bomblocation8(map, lower_bound, upper_bound);
+    bomb_attached8(map);
+    char display[8][8];
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            display[i][j] = 254;
+        }
+    }
+    printtable8(display, map, flag8);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// 16*16 Mode
-void printtable16(char display[16][16], int khooneh[16][16]) {
+void printtable16(char display[16][16], int map[16][16]) {
     printf("\t\033[1;31m%[Flag remaining]:\033[0m  %d \n\n", flag16);
     printf("       1   2   3   4   5   6   7   8   9   10  11  12  13  14 15  16\n\n");
     printf("      ---------------------------------------------------------------\n");
@@ -246,36 +311,36 @@ void printtable16(char display[16][16], int khooneh[16][16]) {
         i--;
         for (int j = 0; j < 16; j++) {
             printf("|");
-            if (khooneh[i][j] == 0) {
+            if (map[i][j] == 0) {
                 printf("   ");
                 continue;
             }
-            if (khooneh[i][j] == 1) {
-                printf(" \033[1;34m%d\033[0m ", khooneh[i][j]);
+            if (map[i][j] == 1) {
+                printf(" \033[1;34m%d\033[0m ", map[i][j]);
                 continue;
             }
-            if (khooneh[i][j] == 2) {
-                printf(" \033[1;32m%d\033[0m ", khooneh[i][j]);
+            if (map[i][j] == 2) {
+                printf(" \033[1;32m%d\033[0m ", map[i][j]);
                 continue;
             }
-            if (khooneh[i][j] == 3) {
-                printf(" \033[1;31m%d\033[0m ", khooneh[i][j]);
+            if (map[i][j] == 3) {
+                printf(" \033[1;31m%d\033[0m ", map[i][j]);
                 continue;
             }
-            if (khooneh[i][j] == 4) {
-                printf(" \033[1;33m%d\033[0m ", khooneh[i][j]);
+            if (map[i][j] == 4) {
+                printf(" \033[1;33m%d\033[0m ", map[i][j]);
                 continue;
             }
-            if (khooneh[i][j] == 5) {
-                printf(" \033[1;36m%d\033[0m ", khooneh[i][j]);
+            if (map[i][j] == 5) {
+                printf(" \033[1;36m%d\033[0m ", map[i][j]);
                 continue;
             }
-            if (khooneh[i][j] == 6) {
-                printf(" \033[1;35m%d\033[0m ", khooneh[i][j]);
+            if (map[i][j] == 6) {
+                printf(" \033[1;35m%d\033[0m ", map[i][j]);
                 continue;
             }
-            if (khooneh[i][j] == 7) {
-                printf(" \033[1;37m%d\033[0m ", khooneh[i][j]);
+            if (map[i][j] == 7) {
+                printf(" \033[1;37m%d\033[0m ", map[i][j]);
                 continue;
             }
             else {
@@ -291,9 +356,75 @@ void printtable16(char display[16][16], int khooneh[16][16]) {
     }
 
 }
+void bomblocation16(int map[16][16], int lower_bound, int upper_bound) {
+    //This function randomly distributes bombs in the game cells
+    for (int bombcount = 40; bombcount > 0; bombcount--) {
 
+        int numi = (rand() % (upper_bound - lower_bound + 1)) + lower_bound;     // i
+        int numj = (rand() % (upper_bound - lower_bound + 1)) + lower_bound;     // j
+        int bomb_counter = 0;
+        for (int i = 0; i < 16; i++) {
+            if (map[i][numj] == 9) {
+                bomb_counter++;                               //this variable controls the bomb's count in each column
+            }
+        }
+        if (bomb_counter >= 3) {
+            bombcount++;
+            continue;
+        }
+        if (map[numi][numj] != 9) {
+            map[numi][numj] = 9;
+        }
+        else { bombcount++; continue; }
+    }
+
+}
+void bomb_attached16(int map[16][16]) {
+    for (int i = 0; i < 16; i++) {
+        for (int j = 0; j < 16; j++) {
+            if (map[i][j] == 9)continue;
+            if (j != 15 && map[i][j + 1] == 9) {
+                map[i][j]++;
+            }
+            if (j != 0 && map[i][j - 1] == 9) {
+                map[i][j]++;
+            }
+            if (i != 15 && map[i + 1][j] == 9) {
+                map[i][j]++;
+            }
+            if (i != 15 && j != 0 && map[i + 1][j - 1] == 9) {
+                map[i][j]++;
+            }
+            if (i != 15 && j != 15 && map[i + 1][j + 1] == 9) {
+                map[i][j]++;
+            }
+            if (i != 0 && map[i - 1][j] == 9) {
+                map[i][j]++;
+            }
+            if (i != 0 && j != 15 && map[i - 1][j + 1] == 9) {
+                map[i][j]++;
+            }
+            if (i != 0 && j != 0 && map[i - 1][j - 1] == 9) {
+                map[i][j]++;
+            }
+
+        }
+    }
+
+}
 void game16() {
-    int khooneh[16][16] = { 0 };
+    int map[16][16] = { 0 };
+    int lower_bound = 0;
+    int upper_bound = 15;
+    bomblocation16(map, lower_bound, upper_bound);
+    bomb_attached16(map);
+    char display[16][16];
+    for (int i = 0; i < 16; i++) {
+        for (int j = 0; j < 16; j++) {
+            display[i][j] = 254;
+        }
+    }
+    printtable16(display, map);
 }
 
 

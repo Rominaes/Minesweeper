@@ -13,6 +13,21 @@ void inputEROR() {//This function was created to display any user's input errors
     system("cls||clear");
 }
 
+
+void changename() {
+    system("cls||clear");
+    printf("Please enter your new username:");
+    gets(playername);
+    system("cls||clear");
+}
+void newplayer() {
+    system("cls||clear");
+    printf("\033[1;35m%Who are YOU??  :| \033[0m\n");
+    gets(playername);
+    bordbakht[0] = 0;
+    bordbakht[1] = 0;
+    system("cls||clear");
+}
 void account() {
     system("cls||clear");
     printf("Please enter your username:");
@@ -55,10 +70,35 @@ int Menu() {
         }
     }
 }
+
 int main() {
     account();
     for(;;){
         system("cls||clear");
         int choose = Menu();
+        if (choose == 2) {
+            changename();
+            printf("\033[1;33m%User name changed to:  %s\033[0m", playername);
+            _sleep(3000);
+            system("cls||clear");
+            continue;
+        }
+        if (choose == 3) {
+            newplayer();
+            printf("\033[1;33m%Hi  %s\033[0m", playername);
+            _sleep(3000);
+            system("cls||clear");
+            continue;
+        }
+        if (choose == 4) {
+            break;
+        }
+        if (choose == 1) {
+
+
+        }
+        else {
+            inputEROR();
+        }
     }
 }

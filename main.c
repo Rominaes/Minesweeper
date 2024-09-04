@@ -6,7 +6,7 @@
 
 ///Global variables
 char playername[30];
-int bordbakht[2] = { 0 , 0 };
+int LooseWin[2] = { 0 , 0 };
 int flag8 = 10;
 int flag16 = 40;
 
@@ -16,6 +16,19 @@ void inputEROR() {//This function was created to display any user's input errors
     printf("\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\ \033[1;31m WRONG INPUTE!!!!TRY AGAIN\033[0m");
     _sleep(1500);
     system("cls||clear");
+}
+void winEffect() {
+    system("cls||clear");
+    for (int i = 1; i < 5; i++) {
+        system("cls||clear");
+        printf("\033[48;2;20;220;20m");
+        _sleep(300);
+        system("cls||clear");
+        printf("\033[48;2;1;1;1m");
+        _sleep(300);
+    }
+    printf("\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\t \033[1;32mCogratulations!!!\033[0m");
+    _sleep(4000);
 }
 
 ///user account
@@ -29,8 +42,8 @@ void newplayer() {
     system("cls||clear");
     printf("\033[1;35m%Who are YOU??  :| \033[0m\n");
     gets(playername);
-    bordbakht[0] = 0;
-    bordbakht[1] = 0;
+    LooseWin[0] = 0;
+    LooseWin[1] = 0;
     system("cls||clear");
 }
 void account() {
@@ -158,6 +171,8 @@ void printtable8(char display[8][8], int map[8][8], int flag) {
     }
 
 }
+
+
 void bomblocation8(int map[8][8], int lower_bound, int upper_bound) {
     //This function randomly distributes bombs in the game cells
     for (int bombcount = 10; bombcount > 0; bombcount--) {
@@ -213,6 +228,276 @@ void bomb_attached8(int map[8][8]) {
     }
 
 }
+
+void numbers_attached_to_zero8(int map[8][8], char display[8][8], int i, int j) {
+    display[i][j] = map[i][j] + 48;
+    if (j != 7) {
+        display[i][j + 1] = map[i][j + 1] + 48;
+    }
+    if (j != 0) {
+        display[i][j - 1] = map[i][j - 1] + 48;
+    }
+    if (i != 7) {
+        display[i + 1][j] = map[i + 1][j] + 48;
+    }
+    if (i != 7 && j != 0) {
+        display[i + 1][j - 1] = map[i + 1][j - 1] + 48;
+    }
+    if (i != 7 && j != 7) {
+        display[i + 1][j + 1] = map[i + 1][j + 1] + 48;
+    }
+    if (i != 0) {
+        display[i - 1][j] = map[i - 1][j] + 48;
+    }
+    if (i != 0 && j != 7) {
+        display[i - 1][j + 1] = map[i - 1][j + 1] + 48;
+    }
+    if (i != 0 && j != 0) {
+        display[i - 1][j - 1] = map[i - 1][j - 1] + 48;
+    }
+}
+void openzero8(int map[8][8], char display[8][8], int trouble[8][8], int i, int j) {
+    trouble[i][j] = 1;
+
+    if (map[i][j] == 0) {
+        numbers_attached_to_zero8(map, display, (i), (j));
+        if (i != 0 && trouble[(i - 1)][(j)] != 1) {
+            openzero8(map, display, trouble, (i - 1), (j));
+
+        }
+        if (i != 0 && j != 0 && trouble[(i - 1)][(j - 1)] != 1) {
+            openzero8(map, display, trouble, (i - 1), (j - 1));
+
+        }
+        if (i != 7 && j != 7 && trouble[(i + 1)][(j + 1)] != 1) {
+
+            openzero8(map, display, trouble, (i + 1), (j + 1));
+
+        }
+        if (i != 7 && j != 0 && trouble[(i + 1)][(j - 1)] != 1) {
+
+            openzero8(map, display, trouble, (i + 1), (j - 1));
+
+        }
+        if (i != 0 && j != 7 && trouble[(i - 1)][(j + 1)] != 1) {
+
+            openzero8(map, display, trouble, (i - 1), (j + 1));
+
+        }
+        if (j != 0 && trouble[i][(j - 1)] != 1) {
+
+            openzero8(map, display, trouble, (i), (j - 1));
+
+        }
+        if (j != 7 && trouble[i][(j + 1)] != 1) {
+
+            openzero8(map, display, trouble, (i), (j + 1));
+
+        }
+        if (i != 7 && trouble[(i + 1)][j] != 1) {
+
+            openzero8(map, display, trouble, (i + 1), (j));
+        }
+
+    }
+    if (map[i][j] == 0) {
+        numbers_attached_to_zero8(map, display, (i), (j));
+        if (i != 7 && trouble[(i + 1)][j] != 1) {
+
+            openzero8(map, display, trouble, (i + 1), (j));
+        }
+        if (i != 0 && j != 0 && trouble[(i - 1)][(j - 1)] != 1) {
+            openzero8(map, display, trouble, (i - 1), (j - 1));
+
+        }
+        if (i != 7 && j != 7 && trouble[(i + 1)][(j + 1)] != 1) {
+
+            openzero8(map, display, trouble, (i + 1), (j + 1));
+
+        }
+        if (i != 7 && j != 0 && trouble[(i + 1)][(j - 1)] != 1) {
+
+            openzero8(map, display, trouble, (i + 1), (j - 1));
+
+        }
+        if (i != 0 && j != 7 && trouble[(i - 1)][(j + 1)] != 1) {
+
+            openzero8(map, display, trouble, (i - 1), (j + 1));
+
+        }
+        if (j != 0 && trouble[i][(j - 1)] != 1) {
+
+            openzero8(map, display, trouble, (i), (j - 1));
+
+        }
+        if (j != 7 && trouble[i][(j + 1)] != 1) {
+
+            openzero8(map, display, trouble, (i), (j + 1));
+
+        }
+        if (i != 0 && trouble[(i - 1)][(j)] != 1) {
+            openzero8(map, display, trouble, (i - 1), (j));
+
+        }
+
+
+    }
+
+}
+
+int checkwin8(char display[8][8], int map[8][8]) {
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            if (map[i][j] == 9 && display[i][j] != 'F')
+                return 0;
+        }
+
+    }
+    return 1;
+}
+void lose8(int map[8][8], char display[8][8]) {
+    system("cls||clear");
+    for (int i = 0; i < 5; i++) {
+        system("cls||clear");
+        printf("\033[48;2;205;50;50m");
+        _sleep(10);
+        system("cls||clear");
+        printf("\033[48;2;1;1;1m");
+        _sleep(10);
+    }
+    system("cls||clear");
+    for (long int i = 1; i < 101; i++) {
+        printf("\033[1;31m%YOU LOST!!!!!!			 \033[0m");
+        _sleep(10);
+    }
+    _sleep(2000);
+    system("cls||clear");
+
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            if (map[i][j] == 9) {
+                display[i][j] = '@';
+            }
+
+        }
+
+    }
+    printtable8(display, map, flag8);
+    char trash[20];
+    gets(trash);
+    system("cls||clear");
+}
+int user_controler8(int map[8][8], char display[8][8], int trouble[8][8]) {
+    int i, j;
+    char RL;
+    int WL = 0;
+    for (;;) {
+        char input[50];
+        gets(input);
+        if (strlen(input) > 6) {
+            int i = 0;
+            while (1) {
+                char t = input[i];
+                i++;
+                if (t == '\0')break;
+            }
+            inputEROR();
+            printtable8(display, map, flag8);
+            continue;
+        }
+        else {
+            i = (int)input[0] - 48;
+            j = (int)input[2] - 48;
+            RL = input[4];
+        }
+        if (i > 8 || j > 8 || i < 1 || j < 1) {
+            int i = 0;
+            while (1) {
+                char t = input[i];
+                i++;
+                if (t == '\0')break;
+            }
+            inputEROR();
+            printtable8(display, map, flag8);
+            continue;
+        }
+        if (RL == 'L' || RL == 'l') {
+            if (display[(i - 1)][(j - 1)] == 'F') {
+
+                inputEROR();
+                printtable8(display, map, flag8);
+                continue;
+            }
+            if (map[(i - 1)][(j - 1)] == 9) {
+                display[(i - 1)][(j - 1)] = '@';
+                lose8(map, display);
+                WL = 0;
+                break;
+            }
+            else if (map[(i - 1)][(j - 1)] == 0) {
+                openzero8(map, display, trouble, (i - 1), (j - 1));
+                openzero8(map, display, trouble, (i - 1), (j - 1));
+
+            }
+            else { display[(i - 1)][(j - 1)] = map[(i - 1)][(j - 1)] + 48; }
+            system("cls||clear");
+            printtable8(display, map, flag8);
+            continue;
+        }
+        if (RL == 'R' || RL == 'r') {
+            if (display[(i - 1)][(j - 1)] >= '0' && display[(i - 1)][(j - 1)] <= '7') {
+
+                inputEROR();
+                system("cls||clear");
+                printtable8(display, map, flag8);
+                continue;
+            }
+            else if (display[(i - 1)][(j - 1)] == 'F') {
+                display[(i - 1)][(j - 1)] = 254;
+                flag8++;
+                system("cls||clear");
+                printtable8(display, map, flag8);
+                continue;
+            }
+            else {
+                if (flag8 == 0) {
+                    inputEROR();
+                    system("cls||clear");
+                    printtable8(display, map, flag8);
+                    continue;
+                }
+                display[(i - 1)][(j - 1)] = 'F';
+                flag8--;
+                system("cls||clear");
+                printtable8(display, map, flag8);
+                if (flag8 != 0) {
+                    continue;
+                }
+
+            }
+
+
+        }
+        if (flag8 == 0) {
+            int t = checkwin8(display, map);
+            if (t == 1) {
+                winEffect();
+                WL = 1;
+            }
+            else {
+                continue;
+            }
+
+        }
+        if (WL == 1) {
+            break;
+        }
+        inputEROR();
+        printtable8(display, map, flag8);
+        continue;
+    }
+    return WL;
+}
 void game8() {
     int map[8][8] = { 0 };
     int lower_bound = 0;
@@ -226,6 +511,14 @@ void game8() {
         }
     }
     printtable8(display, map, flag8);
+    int trouble[8][8] = { 0 };
+    int wl = user_controler8(map, display, trouble);
+    if (wl == 0) {
+        LooseWin[0]++;
+    }
+    else if (wl == 1) {
+        LooseWin[1]++;
+    }
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -427,7 +720,7 @@ void game16() {
     printtable16(display, map);
 }
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 int selectmode() {
     for (;;) {
         system("cls||clear");
@@ -461,9 +754,9 @@ int Menu() {
     for (;;) {
         printf("\033[1;33m User:%s       \033[0m\n", playername);
         _sleep(250);
-        printf("\033[1;35m [Total game played]=%d       \033[0m\n", (bordbakht[1] + bordbakht[0]));
-        printf("\t\033[1;32m [Win]=%d       \033[0m", bordbakht[1]);
-        printf("\033[1;31m [lose]=%d       \033[0m", bordbakht[0]);
+        printf("\033[1;35m [Total game played]=%d       \033[0m\n", (LooseWin[1] + LooseWin[0]));
+        printf("\t\033[1;32m [Win]=%d       \033[0m", LooseWin[1]);
+        printf("\033[1;31m [lose]=%d       \033[0m", LooseWin[0]);
         _sleep(250);
         printf("\n\n\033[1;34m Menu:\033[0m");
         printf("\n\n\n\033[1;34m (1)-Play\033[0m");

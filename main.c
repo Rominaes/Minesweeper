@@ -118,57 +118,8 @@ void printtable8(char display[8][8], int map[8][8], int flag) {
         printf("\n");
     }
     printf("\n\n");
+    printf("Input format : Row Column (R for flag/L for open)=>2 3 R  :");
 
-    printf("       1   2   3   4   5   6   7   8\n\n");
-    printf("      -------------------------------\n");
-    for (int i = 0; i < 8; i++) {
-        printf(" %d-  ", ++i);
-        i--;
-        for (int j = 0; j < 8; j++) {
-            printf("|");
-            if (map[i][j] == 0) {
-                printf("   ");
-                continue;
-            }
-            if (map[i][j] == 1) {
-                printf(" \033[1;34m%d\033[0m ", map[i][j]);
-                continue;
-            }
-            if (map[i][j] == 2) {
-                printf(" \033[1;32m%d\033[0m ", map[i][j]);
-                continue;
-            }
-            if (map[i][j] == 3) {
-                printf(" \033[1;31m%d\033[0m ", map[i][j]);
-                continue;
-            }
-            if (map[i][j] == 4) {
-                printf(" \033[1;33m%d\033[0m ", map[i][j]);
-                continue;
-            }
-            if (map[i][j] == 5) {
-                printf(" \033[1;36m%d\033[0m ", map[i][j]);
-                continue;
-            }
-            if (map[i][j] == 6) {
-                printf(" \033[1;35m%d\033[0m ", map[i][j]);
-                continue;
-            }
-            if (map[i][j] == 7) {
-                printf(" \033[1;37m%d\033[0m ", map[i][j]);
-                continue;
-            }
-            else {
-                printf(" \033[1;35m@\033[0m ");
-                continue;
-            }
-        }
-        printf("|");
-        printf("\n");
-        printf("      -------------------------------");
-        printf("\n");
-
-    }
 
 }
 
@@ -592,63 +543,9 @@ void printtable16(char display[16][16], int map[16][16]) {
     }
     printf("\n\n");
 
-    printf("       1   2   3   4   5   6   7   8   9   10  11  12  13  14 15  16\n\n");
-    printf("      ---------------------------------------------------------------\n");
-    for (int i = 0; i < 16; i++) {
-        if (i < 9) {
-            printf(" %d-  ", ++i);
-        }
-        else {
-            printf(" %d- ", ++i);
-        }
-        i--;
-        for (int j = 0; j < 16; j++) {
-            printf("|");
-            if (map[i][j] == 0) {
-                printf("   ");
-                continue;
-            }
-            if (map[i][j] == 1) {
-                printf(" \033[1;34m%d\033[0m ", map[i][j]);
-                continue;
-            }
-            if (map[i][j] == 2) {
-                printf(" \033[1;32m%d\033[0m ", map[i][j]);
-                continue;
-            }
-            if (map[i][j] == 3) {
-                printf(" \033[1;31m%d\033[0m ", map[i][j]);
-                continue;
-            }
-            if (map[i][j] == 4) {
-                printf(" \033[1;33m%d\033[0m ", map[i][j]);
-                continue;
-            }
-            if (map[i][j] == 5) {
-                printf(" \033[1;36m%d\033[0m ", map[i][j]);
-                continue;
-            }
-            if (map[i][j] == 6) {
-                printf(" \033[1;35m%d\033[0m ", map[i][j]);
-                continue;
-            }
-            if (map[i][j] == 7) {
-                printf(" \033[1;37m%d\033[0m ", map[i][j]);
-                continue;
-            }
-            else {
-                printf(" \033[1;35m@\033[0m ");
-                continue;
-            }
-        }
-        printf("|");
-        printf("\n");
-        printf("      ---------------------------------------------------------------");
-        printf("\n");
-
-    }
-
+    printf("Input format : Row Column (R for flag/L for open)=>2 3 R  :");
 }
+
 void bomblocation16(int map[16][16], int lower_bound, int upper_bound) {
     //This function randomly distributes bombs in the game cells
     for (int bombcount = 40; bombcount > 0; bombcount--) {
@@ -705,6 +602,219 @@ void bomb_attached16(int map[16][16]) {
     }
 
 }
+
+void numbers_attached_to_zero16(int map[16][16], char display[16][16], int i, int j) {
+    display[i][j] = map[i][j] + 48;
+    if (j != 15) {
+        display[i][j + 1] = map[i][j + 1] + 48;
+    }
+    if (j != 0) {
+        display[i][j - 1] = map[i][j - 1] + 48;
+    }
+    if (i != 15) {
+        display[i + 1][j] = map[i + 1][j] + 48;
+    }
+    if (i != 15 && j != 0) {
+        display[i + 1][j - 1] = map[i + 1][j - 1] + 48;
+    }
+    if (i != 15 && j != 7) {
+        display[i + 1][j + 1] = map[i + 1][j + 1] + 48;
+    }
+    if (i != 0) {
+        display[i - 1][j] = map[i - 1][j] + 48;
+    }
+    if (i != 0 && j != 15) {
+        display[i - 1][j + 1] = map[i - 1][j + 1] + 48;
+    }
+    if (i != 0 && j != 0) {
+        display[i - 1][j - 1] = map[i - 1][j - 1] + 48;
+    }
+}
+void openzerot16(int map[16][16], char display[16][16], int trouble[16][16], int i, int j) {
+    trouble[i][j] = 1;
+
+    if (map[i][j] == 0) {
+        numbers_attached_to_zero16(map, display, (i), (j));
+        if (i != 0 && trouble[(i - 1)][(j)] != 1) {
+            openzerot16(map, display, trouble, (i - 1), (j));
+
+        }
+        if (i != 0 && j != 0 && trouble[(i - 1)][(j - 1)] != 1) {
+            openzerot16(map, display, trouble, (i - 1), (j - 1));
+
+        }
+        if (i != 15 && j != 15 && trouble[(i + 1)][(j + 1)] != 1) {
+
+            openzerot16(map, display, trouble, (i + 1), (j + 1));
+
+        }
+        if (i != 15 && j != 0 && trouble[(i + 1)][(j - 1)] != 1) {
+
+            openzerot16(map, display, trouble, (i + 1), (j - 1));
+
+        }
+        if (i != 0 && j != 15 && trouble[(i - 1)][(j + 1)] != 1) {
+
+            openzerot16(map, display, trouble, (i - 1), (j + 1));
+
+        }
+        if (j != 0 && trouble[i][(j - 1)] != 1) {
+
+            openzerot16(map, display, trouble, (i), (j - 1));
+
+        }
+        if (j != 7 && trouble[i][(j + 1)] != 1) {
+
+            openzerot16(map, display, trouble, (i), (j + 1));
+
+        }
+        if (i != 15 && trouble[(i + 1)][j] != 1) {
+
+            openzerot16(map, display, trouble, (i + 1), (j));
+        }
+
+    }
+
+
+}
+
+int checkwin16(char display[16][16], int map[16][16]) {
+    for (int i = 0; i < 16; i++) {
+        for (int j = 0; j < 16; j++) {
+            if (map[i][j] == 9 && display[i][j] != 'F')
+                return 0;
+        }
+
+    }
+    return 1;
+}
+void lose16(int map[16][16], char display[16][16]) {
+    system("cls||clear");
+    for (int i = 0; i < 5; i++) {
+        system("cls||clear");
+        printf("\033[48;2;205;50;50m");
+        _sleep(10);
+        system("cls||clear");
+        printf("\033[48;2;1;1;1m");
+        _sleep(10);
+    }
+    system("cls||clear");
+    for (long int i = 1; i < 101; i++) {
+        printf("\033[1;31m%YOU LOST!!!!!!			 \033[0m");
+        _sleep(10);
+    }
+    _sleep(2000);
+    system("cls||clear");
+
+    for (int i = 0; i < 16; i++) {
+        for (int j = 0; j < 16; j++) {
+            if (map[i][j] == 9) {
+                display[i][j] = '@';
+            }
+
+        }
+
+    }
+    printtable16(display, map);
+    char trash[20];
+    gets(trash);
+}
+int user_controler16(int map[16][16], char display[16][16], int trouble[16][16]) {
+    int i, j;
+    char RL;
+    int WL = 0;
+    for (;;) {
+        scanf("%d %d %c", &i, &j, &RL);
+        char trash[50];
+        gets(trash);
+        if (strlen(trash) != 0) {
+            inputEROR();
+            printtable16(display, map);
+            continue;
+        }
+        if (i > 16 || j > 16 || i < 1 || j < 1) {
+            inputEROR();
+            printtable16(display, map);
+            continue;
+        }
+        if (RL == 'L' || RL == 'l') {
+            if (display[(i - 1)][(j - 1)] == 'F') {
+                inputEROR();
+                printtable16(display, map);
+                continue;
+            }
+            if (map[(i - 1)][(j - 1)] == 9) {
+                display[(i - 1)][(j - 1)] = '@';
+                lose16(map, display);
+                WL = 0;
+                break;
+            }
+            else if (map[(i - 1)][(j - 1)] == 0) {
+                openzerot16(map, display, trouble, (i - 1), (j - 1));
+                openzerot16(map, display, trouble, (i - 1), (j - 1));
+            }
+            else { display[(i - 1)][(j - 1)] = map[(i - 1)][(j - 1)] + 48; }
+            system("cls||clear");
+            printtable16(display, map);
+            continue;
+        }
+        if (RL == 'R' || RL == 'r') {
+            if (display[(i - 1)][(j - 1)] >= '0' && display[(i - 1)][(j - 1)] <= '7') {
+                inputEROR();
+                system("cls||clear");
+                printtable16(display, map);
+                continue;
+            }
+            else if (display[(i - 1)][(j - 1)] == 'F') {
+                display[(i - 1)][(j - 1)] = 254;
+                flag16++;
+                system("cls||clear");
+                printtable16(display, map);
+                continue;
+            }
+            else {
+                if (flag16 == 0) {
+                    inputEROR();
+                    system("cls||clear");
+                    printtable16(display, map);
+                    continue;
+                }
+                display[(i - 1)][(j - 1)] = 'F';
+                flag16--;
+                system("cls||clear");
+                printtable16(display, map);
+                if (flag16 != 0) {
+                    continue;
+                }
+
+            }
+
+
+        }
+        if (flag16 == 0) {
+            int t = checkwin16(display, map);
+            if (t == 1) {
+                winEffect();
+                WL = 1;
+                break;
+            }
+            else {
+                continue;
+            }
+
+        }
+        if (WL == 1) {
+            break;
+        }
+        inputEROR();
+        printtable16(display, map);
+        continue;
+    }
+    return WL;
+}
+
+
+
 void game16() {
     int map[16][16] = { 0 };
     int lower_bound = 0;
@@ -718,6 +828,14 @@ void game16() {
         }
     }
     printtable16(display, map);
+    int trouble[16][16] = { 0 };
+    int wl = user_controler16(map, display, trouble);
+    if (wl == 0) {
+        LooseWin[0]++;
+    }
+    else if (wl == 1) {
+        LooseWin[1]++;
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////

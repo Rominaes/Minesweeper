@@ -903,9 +903,31 @@ int Menu() {
         }
     }
 }
-
+void wellcome() {
+    system("cls||clear");
+    printf("\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t");
+    char wellcome[30] = " WELLCOME TO  MINESWEEPER";
+    for (int i = 0; i < 25; i++) {
+        printf("\033[1;32m%c\033[0m", wellcome[i]);
+        _sleep(85);
+    }
+    printf("\n\n\t\t\t\t\t\t\t\t");
+    char creator[35] = "DEVELOPED BY ALISHA";
+    for (int i = 0; i < 19; i++) {
+        printf("\033[1;34m%c\033[0m", creator[i]);
+        _sleep(200);
+    }
+    _sleep(4000);
+    system("cls||clear");
+}
 int main() {
+    srand(time(NULL));
+    printf("\033[48;2;20;20;250m");
+    wellcome();
     account();
+    printf("\033[1;33m%Hi %s\033[0m", playername);
+    _sleep(1000);
+    system("cls||clear");
     for(;;){
         system("cls||clear");
         int choose = Menu();

@@ -940,7 +940,7 @@ int main() {
         }
         if (choose == 3) {
             newplayer();
-            printf("\033[1;33m%Hi  %s\033[0m", playername);
+            printf("\033[1;33m%Hello  %s\033[0m", playername);
             _sleep(3000);
             system("cls||clear");
             continue;
